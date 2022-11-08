@@ -1,6 +1,8 @@
 # word
 count word frequency
 
+Framework:
+  Maven Spring Boot
 
 Endpoints:
 1)Calculate highest frequency:
