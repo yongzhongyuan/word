@@ -3,6 +3,7 @@ package com.ordina.word.analyzer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -10,20 +11,16 @@ import org.apache.log4j.Logger;
 
 public class WordFrequencyAnalyzerImpl implements WordFrequencyAnalyzer {
 	private static final Logger logger = Logger.getLogger(WordFrequencyAnalyzerImpl.class);
-	private int highestFrequence = 0;
 
 	@Override
 	public int calculateHighestFrequency(String text) {
 		try {
-			getWordWithFrequency(text).forEach((k, v) -> {
-				if (v > highestFrequence) {
-					highestFrequence = v;
-				}
-			});
+			return getWordWithFrequency(text).entrySet().stream().max(Comparator.comparing(Map.Entry::getValue))
+					.orElseThrow(NoSuchElementException::new).getValue();
 		} catch (Exception ex) {
 			logger.error(ex.getMessage());
+			return 0;
 		}
-		return highestFrequence;
 	}
 
 	@Override
@@ -70,7 +67,7 @@ public class WordFrequencyAnalyzerImpl implements WordFrequencyAnalyzer {
 	public Map<String, Integer> getWordWithFrequency(String text) throws Exception {
 		Map<String, Integer> wordMap = new TreeMap<>();
 		if (text != null) {
-			// remove all punctuation and line break, then splitting text by word
+			// remove punctuation and line break, then splitting text by word
 			String arr[] = text.replaceAll("\\p{Punct}", "").replace("\n", "").replace("\r", "").split(" ");
 
 			// Loop to iterate over the words
